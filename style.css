@@ -1,22 +1,35 @@
 .row {
     display: flex;
+    align-items: center top;
+    justify-content: center;
   }
-.contentcenter {
-    width:192px;
-    height: auto;
-    max-height:auto;
-
+.contentcenter {    
     text-align: center;
 }
-.p {
-    font-size: 66px;
+.pokemoncontainer {
+    width: 33vw;      /* Fixed width */
+    height: 33vw;     /* Fixed height */
+    position: relative;
+
+    max-width: 192px;
+    max-height: 192px;
+
 }
-.pokemonimage {
+.pokemoncontainer img {
+    transform: translate(-50%, -50%) scale(2); /* Scale factor goes here */
+    transform-origin: bottom bottom;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
 
-    width:100%;
-    height: auto;
-
+    object-fit: contain;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
+    object-position: center;
+}
+
+.everything {
+    text-align: center;
 }

@@ -1,6 +1,8 @@
 //CONSTANTS
 const ERROR_SPRITE = "error.png"; //fallback image for pokemon
 const POKEMON_COUNT = 3; //how many pokemon to use
+const STAT_MAX = 256; //highest possible stat value
+const STAT_AMOUNT = 6; //how many stats a apokemon has
 const CATEGORY_ENUM = { //enumerator of each type of category
     TYPE: 0,
     COLOR: 1,
@@ -29,6 +31,7 @@ const ABILITY_LIST = ["Adaptability", "Aerilate", "Aftermath", "Air Lock", "Anal
 const BANNED_POKEMON = [
     -1, //fallback value
     1117, //raticate totem
+    1140, //ash greninja
     1145, //gumshoos totem
     1146, //vikavolt totem
     1152, //lurantis totem
@@ -47,8 +50,7 @@ const BANNED_POKEMON = [
     1292, //miraidon forms
     1293,
     1294,
-    1295,
-
+    1295
 ]
 //FUNCTIONS
 
@@ -108,9 +110,12 @@ async function fetchPokemonData(pokemonID) {
     
     //ADDITIONAL DATA
     //set some pokemon to be shiny cuz its cool
-    finalObject.shiny = Math.floor(Math.random() * 1024);
+    finalObject.shiny = (Math.floor(Math.random() * 1024) == 1);
+    console.log(finalObject.shiny);
     finalObject.shinySound = false;
-
+    if (finalObject.shiny) {
+        finalObject.name += " ✨"
+    }
     return finalObject;
 }
 
@@ -118,19 +123,32 @@ async function fetchPokemonData(pokemonID) {
 async function newRandomPokemon() {
     let randomID = -1; //randomly selected pokemon
     let newPokemon;
+    let loopFlag = true;
+    let megaFlag = false;
+    let gmaxFlag = false;
     //clear the selected pokemon array
     selectedPokemon = [];
 
     //select a random pokemon
     for (let i = 0; i < POKEMON_COUNT; i++) {
         //get random mon
-        //ensure that the mon is not banned too
-        randomID = Math.floor(Math.random() * pokemonData.length) ;
-        while (BANNED_POKEMON.includes(randomID)) {
+        //keep selecting monsters until we get a valid one
+        while (loopFlag) {
+            //ensure that the mon is not hard banned
             randomID = Math.floor(Math.random() * pokemonData.length) ;
+            while (BANNED_POKEMON.includes(randomID)) {
+                randomID = Math.floor(Math.random() * pokemonData.length) ;
+            }
+            //get data from API
+            newPokemon = await fetchPokemonData(randomID);
+            //now, we ensure it is not mega or GMAX (depending on ruleset)
+            console.log(newPokemon.forms[0].name);
+            console.log(newPokemon.forms[0].name.includes("-mega"));
+            loopFlag = false;
+            loopFlag = loopFlag || (!megasAllowed && newPokemon.forms[0].name.includes("-mega"));
+            loopFlag = loopFlag || (!gmaxAllowed && newPokemon.forms[0].name.includes("-gmax"));
         }
-        console.log(randomID);
-        newPokemon = await fetchPokemonData(randomID)
+        loopFlag = true;
         selectedPokemon.push(newPokemon);
     }
 
@@ -138,6 +156,7 @@ async function newRandomPokemon() {
     updatePokemonIcons();
     updatePokemonText();
     updatePokemonNames();
+    updateCategory();
 }
 
 //update the icon IMG tags in the HTML doccument
@@ -152,9 +171,12 @@ function updatePokemonIcons() {
     //get and load the new icons 
     for (let i = 0; i < POKEMON_COUNT; i++) {
         try{
-            shinyFlag = (selectedPokemon[i].shiny == 1);
+            //calc shinyness
+            shinyFlag = (selectedPokemon[i].shiny == true);
+            let isShiny = (shinyFlag || category == (CATEGORY_ENUM.SHINY));
+            //set the base icon
             let documentID = document.getElementById('icon'+String(i))
-            documentID.src = selectedPokemon[i].sprites.front_default;
+            documentID.src = selectedPokemon[i].sprites.versions["generation-v"]["black-white"].animated.front_default;
             //shiny icons
             if(isShiny) {
                 //play shiny sound if legit sound
@@ -163,13 +185,16 @@ function updatePokemonIcons() {
                     audio.play();
                     selectedPokemon[i].shinySound = true;
                 }
-                documentID.src = selectedPokemon[i].sprites.front_shiny;
+                documentID.src = selectedPokemon[i].sprites.versions["generation-v"]["black-white"].animated.front_shiny;
             }
             documentID.onerror = () => {
-                console.log("Image Load Error!");
-                console.log(selectedPokemon[i]);
-                documentID.src = selectedPokemon[i].sprites.other.showdown.front_default;
-                if (isShiny) documentID.src = selectedPokemon[i].sprites.other.showdown.front_shiny;
+                //DEBUGGING CODE
+                //console.log("Image Load Error!");
+                //console.log(selectedPokemon[i]);
+
+                //for mons after gen 5, load the default sprite
+                documentID.src = selectedPokemon[i].sprites.front_default;
+                if (isShiny) documentID.src = selectedPokemon[i].sprites.front_shiny;
             }
         } catch(ERROR) {
             //error case (this should never happen)
@@ -205,26 +230,33 @@ function updatePokemonText() {
                 break;
             case CATEGORY_ENUM.STAT_HIGH:
                 let highestValue = 0;
+                let sameStats = 0;
                 tempString = "???"
-                for (let i2 = 0; i2 < 6; i2++) {
+                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
                     if (selectedPokemon[i].stats[i2].base_stat > highestValue) {
                         highestValue = selectedPokemon[i].stats[i2].base_stat;
-                        tempString = selectedPokemon[i].stats[i2].stat.name;
+                        tempString = STAT_NAMES[i2];
                     } else if (selectedPokemon[i].stats[i2].base_stat == highestValue) {
-                        tempString += " + " + selectedPokemon[i].stats[i2].stat.name;
+                        sameStats++;
+                        tempString += " + " + STAT_NAMES[i2];
                     }
                 }
+                console.log(sameStats);
                 tempString = capitalize(tempString);
+                //if every stat is the same print a new message
+                if (sameStats >= STAT_AMOUNT - 1) {
+                    tempString = "Balanced";
+                }
                 break;
             case CATEGORY_ENUM.STAT_LOW:
-                let lowestValue = 256;
+                let lowestValue = STAT_MAX;
                 tempString = "???"
-                for (let i2 = 0; i2 < 6; i2++) {
+                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
                     if (selectedPokemon[i].stats[i2].base_stat < lowestValue) {
                         lowestValue = selectedPokemon[i].stats[i2].base_stat;
-                        tempString = selectedPokemon[i].stats[i2].stat.name;
+                        tempString = STAT_NAMES[i2];
                     } else if (selectedPokemon[i].stats[i2].base_stat == lowestValue) {
-                        tempString += " + " + selectedPokemon[i].stats[i2].stat.name;
+                        tempString += " + " + STAT_NAMES[i2];
                     }
                 }
                 tempString = capitalize(tempString);
@@ -269,6 +301,8 @@ function updateCategory() {
     //get the category value forom the HTML element and send it to our code
     let categoryValue = document.getElementById("category").value;
     category = parseInt(categoryValue);
+    //update category header
+    document.getElementById("categorydisplay").textContent = "\""+document.getElementById("category").options[categoryValue].text+"\"";
     //update the text and icons
     updatePokemonText();
     updatePokemonIcons();
@@ -308,15 +342,29 @@ function randomCategory() {
     //update the text and icons
     updatePokemonText();
     updatePokemonIcons();
+    updateCategory();
 }
+
+//set the mega allowed based on checkbox
+function updateMegaAllowed() {
+    megasAllowed = document.getElementById("megaBox").checked;
+    console.log(megasAllowed);
+}
+
+//set the gmax allowed based on checkbox
+function updateGmaxAllowed() {
+    gmaxAllowed = document.getElementById("gmaxBox").checked;
+    console.log(gmaxAllowed);
+}
+
 
 //VARIABLES
 let pokemonData = []; //contains every pokemon and the link to their associated API link.
 let selectedPokemon = []; //the currently selected pokemons
 let selectedPokemonSpecies = []; //for some reason, some species data is stored in a completley different query. FUN!
-//let movesList = [];  //data for every move
-//let abilityList = [];//data for every ability
 let category = 0; //currnetly selected categoyr
+let megasAllowed = false; //whether specific forms are allowed
+let gmaxAllowed = false;
 
 
 //'''MAIN'''
