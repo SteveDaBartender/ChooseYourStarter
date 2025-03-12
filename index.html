@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Starter</title>
+    <link rel="stylesheet" href="style.css" type="text/css"> 
+</head>
+<body>
+    
+    <script src="script.js"></script>
+    <h1>Choose Your Starter</h1>
+    <div class="row">
+        <div class="contentcenter">
+            <img id="icon0" src="error.png">
+            <b><p id="name0">name0</p></b>
+            <p id="text0">temp</p>
+        </div>
+
+        <div class="contentcenter">
+            <img id="icon1" src="error.png">
+            <b><p id="name1">name1</p></b>
+            <p id="text1">temp</p>
+        </div>
+
+        <div class="contentcenter">
+            <img id="icon2" src="error.png">
+            <b><p id="name2">name2</p></b>
+            <p id="text2">temp</p>
+        </div>
+    </div>
+    <p></p>
+    <button onclick="newRandomPokemon()">New Random Pokemon</button>
+    <button onclick="randomMoveAbility()">New  Move and Ability</button>
+    <button onClick="randomCategory()">Randomize Category</button>
+    <select onchange="updateCategory()" id="category">
+        <option value="0">Types</option>
+        <option value="1">Color</option>
+        <option value="2">Highest Stat</option>
+        <option value="3">Lowest Stat</option>
+        <option value="4">Origin Generation</option>
+        <option value="5">EV Yield</option>
+        <option value="6">Shiny</option>
+        <option value="7">Height</option>
+        <option value="8">Weight</option>
+        <option value="9">Dex Number</option>
+    </select>
+
+    <p id="ability0">ability0</p>
+    <p id="move0">move0</p>
+
+</body>
+</html>
+

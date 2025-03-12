@@ -1,0 +1,11 @@
+.row {
+    display: flex;
+  }
+.contentcenter {
+    max-width:40vw;
+    height: auto;
+    max-height:auto;
+}
+.p {
+    font-size: 66px;
+}
