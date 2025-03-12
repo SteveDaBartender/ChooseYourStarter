@@ -2,10 +2,21 @@
     display: flex;
   }
 .contentcenter {
-    max-width:40vw;
+    width:192px;
     height: auto;
     max-height:auto;
+
+    text-align: center;
 }
 .p {
     font-size: 66px;
+}
+.pokemonimage {
+
+    width:100%;
+    height: auto;
+
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
