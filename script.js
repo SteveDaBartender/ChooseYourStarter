@@ -3,6 +3,9 @@ const ERROR_SPRITE = "error.png"; //fallback image for pokemon
 const POKEMON_COUNT = 3; //how many pokemon to use
 const STAT_MAX = 256; //highest possible stat value
 const STAT_AMOUNT = 6; //how many stats a apokemon has
+const METERS_TO_FEET = 3.28084; //conversion of units
+const KILO_TO_LBS = 2.20462;
+const FOOT_INCHES = 12;
 const CATEGORY_ENUM = { //enumerator of each type of category
     TYPE: 0,
     COLOR: 1,
@@ -14,7 +17,10 @@ const CATEGORY_ENUM = { //enumerator of each type of category
     HEIGHT:7,
     WEIGHT:8,
     DEX_NUM:9,
-    LENGTH:10
+    HATCH_TIME:10,
+    CATCH_RATE:11,
+    SHAPE:12,
+    LENGTH:13
 };
 const STAT_NAMES = [ //names used to draw the stats
     "HP",
@@ -30,18 +36,52 @@ const ABILITY_LIST = ["Adaptability", "Aerilate", "Aftermath", "Air Lock", "Anal
 //pokemon that must be rerolled (mostly strange forms that dont have images)
 const BANNED_POKEMON = [
     -1, //fallback value
+    1051, //pumpkaboo alt forms
+    1052,
+    1053,
+
+    1054, //gourgeist forms
+    1055,
+    1056,
+
+    1118, //cap pikachus
+    1119,
+    1120,
+    1121,
+    1122,
+    1123,
+
+    1140, //battle bond greninjas
+    1141,
+
+    1142, //power construct zygarde
+    1143,
+
     1117, //raticate totem
-    1140, //ash greninja
+
+    1167, //mimikyu busted
+
     1145, //gumshoos totem
     1146, //vikavolt totem
     1152, //lurantis totem
     1153, //salazzle totem
     1168, //mimikyu totem
     1169, //mimikyu totem busted
+
+    1172, //partner cap pikachu
+
     1173, //marowak totem
     1174, //ribombee totem
+
+    1175, //own tempo rockruff
+
     1177, //araquanid totem
     1178, //togedemaru totem
+
+    1184, //pikachu world cap
+    
+    1206, //cramorant forms
+    1207,
 
     1288, //koraidon forms
     1289,
@@ -50,7 +90,7 @@ const BANNED_POKEMON = [
     1292, //miraidon forms
     1293,
     1294,
-    1295
+    1295,
 ]
 //FUNCTIONS
 
@@ -274,16 +314,39 @@ function updatePokemonText() {
                 tempString = selectedPokemon[i].generation.name;
                 break;
             case CATEGORY_ENUM.SHINY:
-                tempString = "IT'S SHINY???";
+                tempString = "✨";
                 break;
             case CATEGORY_ENUM.HEIGHT:
-                tempString = selectedPokemon[i].height/10 + "m";
+                let tempHeight = selectedPokemon[i].height/10
+                if (metric) {
+                    tempString = tempHeight + "m";
+                } else {
+                    tempHeight *= METERS_TO_FEET;
+                    tempString = Math.floor(tempHeight) +"' " + Math.trunc((tempHeight)*FOOT_INCHES) + "\"" + "ft"
+                }
                 break;
             case CATEGORY_ENUM.WEIGHT:
-                tempString = selectedPokemon[i].weight/10 + " kg";
+                let tempWeight = selectedPokemon[i].weight/10;
+                if (metric) {
+                    tempString = tempWeight + " kg";
+                } else {
+                    //unfixed data type langauges are nutty
+                    tempString = Number(tempWeight * KILO_TO_LBS).toFixed(2);
+                    tempString += " lbs"
+                }
                 break;
             case CATEGORY_ENUM.DEX_NUM:
                 tempString = "#"+selectedPokemon[i].pokedex_numbers[0].entry_number;
+                break;
+            case CATEGORY_ENUM.HATCH_TIME:
+                tempString = selectedPokemon[i].hatch_counter + " Cycles";
+                break;
+            case CATEGORY_ENUM.CATCH_RATE:
+                console.log(selectedPokemon[i]);
+                tempString = selectedPokemon[i].capture_rate+"";
+                break;
+            case CATEGORY_ENUM.SHAPE:
+                tempString = selectedPokemon[i].shape.name;
                 break;
             default:
                 tempString = "Not Implemented.";
@@ -365,7 +428,7 @@ let selectedPokemonSpecies = []; //for some reason, some species data is stored 
 let category = 0; //currnetly selected categoyr
 let megasAllowed = false; //whether specific forms are allowed
 let gmaxAllowed = false;
-
+let metric = false; //whether to use metric system
 
 //'''MAIN'''
 (async () => {
