@@ -9,36 +9,48 @@
 <body>
 <div class="everything">
     <script src="script.js"></script>
-    <h1>Choose Your Starter</h1>
+    <h1 class="title">Choose Your Starter</h1>
     <h3 id="categorydisplay">"Category Name"</h3>
     <div class="row">
         <div class="contentcenter">
+            <div class="namecontainer">
+                <b><p id="name0">Loading...</p></b>
+            </div>
             <div class ="pokemoncontainer">
                 <img id="icon0" src="error.png">
             </div>
-            <b><p id="name0">Loading...</p></b>
-            <p id="text0"> </p>
+            <div class="textcontainer">
+                <p id="text0">Loading...</p>
+            </div>
         </div>
 
         <div class="contentcenter">
+            <div class="namecontainer">
+                <b><p id="name1">Loading...</p></b>
+            </div>
             <div class="pokemoncontainer">
                 <img id="icon1" src="error.png">
             </div>
-            <b><p id="name1">Loading...</p></b>
-            <p id="text1"> </p>
+            <div class="textcontainer">
+                <p id="text1">Loading...</p>
+            </div>
         </div>
 
         <div class="contentcenter">
+            <div class="namecontainer">
+                <b><p id="name2">Loading...</p></b>
+            </div>
             <div class="pokemoncontainer">
                 <img id="icon2" src="error.png">
             </div>
-            <b><p id="name2">Loading...</p></b>
-            <p id="text2"> </p>
+            <div class="textcontainer">
+                <p id="text2">Loading...</p>
+            </div>
         </div>
     </div>
-    <button onclick="newRandomPokemon()">Randomize Pokemon</button>
-    <button onClick="randomCategory()">Randomize Category</button>
-    <select onchange="updateCategory()" id="category">
+    <button class = "buttonstandard" onclick="newRandomPokemon()">Randomize Pokemon</button>
+    <button class = "buttonstandard" onClick="randomCategory()">Randomize Category</button>
+    <select style="padding-left:8px" class = "buttonstandard" onchange="updateCategory()" id="category">
         <option value="0">Types</option>
         <option value="1">Color</option>
         <option value="2">Highest Stat</option>
@@ -55,16 +67,25 @@
        
 
     </select>
-
-    <p id="ability0">ability0</p>
-    <p id="move0">move0</p>
-    <button onclick="randomMoveAbility()">New  Move and Ability</button>
+    <div class="row">
+        <div class="abilitycontainer">
+            <p id="ability0">ability0</p>
+        </div>
+        <div class="abilitycontainer movecontainer">
+            <p id="move0">move0</p>
+        </div>
+    </div>
+    <button class = "buttonstandard" onclick="randomMoveAbility()">New Move & Ability</button>
 
     <p></p>
-    <input id="megaBox" onchange="updateMegaAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
-    <label >Enable Mega Forms</label><br>
-    <input id="gmaxBox" onchange="updateGmaxAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
-    <label >Enable GMAX Forms</label><br>
+    <div class="footer">
+        <input id="megaBox" onchange="updateMegaAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <label >Enable Mega Forms</label>
+        <input id="gmaxBox" onchange="updateGmaxAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <label >Enable GMAX Forms</label>
+        <input id="metricBox" onchange="updateMetric()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <label >Imperial System</label>
+    </div>
 </div>
 </body>
 </html>

@@ -1,3 +1,23 @@
+@font-face {
+    font-family: bw;
+    src: url(src/bw.ttf);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: korataki;
+    src: url(src/title.otf);
+    font-display: swap;
+}
+
+.title {
+    font-family: korataki;
+    font-size:36px;
+    opacity:1.0;
+    text-shadow: 6px 6px 0px #0f0f0f;
+    color:#d5d5db;
+}
+
 .row {
     display: flex;
     align-items: center top;
@@ -6,10 +26,19 @@
 .contentcenter {    
     text-align: center;
 }
+.contentcenter p {
+    font-size: clamp(1px, 5vw, 28px); /*28px*/
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#2e2b2b;
+} 
+
 .pokemoncontainer {
     width: 33vw;      /* Fixed width */
     height: 33vw;     /* Fixed height */
     position: relative;
+
+    background: #DDDDDD44;
 
     max-width: 192px;
     max-height: 192px;
@@ -23,13 +52,146 @@
     top: 50%;
     left: 50%;
 
+}
+
+.namecontainer {
+    height: 11vw;
+    max-height: 66px;
+    
+    
+    background-image: url("img/namebox.png");
+    background-size: 100%;
+    opacity:0.75;
+
+
+}
+
+.namecontainer p{
+    text-align: left;
+    padding-left: clamp(1vw, 8vw, 41px);
+    padding-top: 1px;
+
+   
+}
+
+.textcontainer {
+    height: 11vw;
+    max-height: 66px;
+    max-width:192px;
+
+    margin-top:-32px;
+    overflow-wrap: break-word;
+
+    background-image: url("img/textbox.png");
+    background-size: 100%;
+    opacity:0.75;
+}
+
+.textcontainer p{
+    text-align: left;
+    padding-top: 2px;
+    padding-left: clamp(1vw, 8vw, 11px);
+}
+
+.abilitycontainer {
+    position: relative;
+    width:170px;
+    height:48px;
+    margin-right:10px;
+    margin-top:10px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    background-image: url("img/abilitybox.png");
+}
+
+.abilitycontainer p {
+    text-align: left;
+    margin-top: 15px;
+    padding-left: 10px;
+
+    font-size: clamp(1px, 5vw, 28px); /*28px*/
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#2e2b2b;
+}
+
+.movecontainer{
+    background-image: url("img/movesbox.png");
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height:36px;
+
+    background-image: url("img/footer.png");
+
+    font-size: clamp(1px, 5vw, 28px); /*28px*/
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#2e2b2b;
+}
+
+.footer label button {
+    display: inline;
+}
+
+.buttonstandard {
+    background-image:url("img/button.png");
+    background-size:100%;
+    background-color: transparent;
+    padding: 0px;
+    margin-top:5px;
+    border: none;
+
+    width:170px;
+    height:34px;
+
+    font-family: bw;
+    font-size: 24px;
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#ffffff;
+
+    cursor: pointer;
+}
+.buttonstandard:active .buttonselect:active{
+    color:#AAAAAA;
+    text-shadow: 2px 2px 0px #444444;
+}
+
+
+.everything {
+    text-align: center;
+    font-family: bw;
+    font-size:32px;
+
     object-fit: contain;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
     object-position: center;
+
+    font-smooth: never;
+    -webkit-font-smoothing : none;
 }
 
-.everything {
-    text-align: center;
+body {
+    background-image: url('img/bg.png');
+    background-attachment: fixed;
+    animation: scrollBG 1s linear infinite; /* Adjust speeds */
+}
+
+@keyframes scrollBG {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -32px -32px;
+  }
 }
