@@ -1,0 +1,119 @@
+@font-face {
+    font-family: bw;
+    src: url(src/bw.ttf);
+    font-display: swap;
+}
+/* ---------- Container for the orbiting circles animation ---------- */
+#circle-orbit-container {
+    position: relative;
+    height: 90vh;
+    width: 90vh;
+
+    top: 20%;
+    transform: translateY(20%);
+
+    margin: auto;
+    max-width:650px;
+    max-height:650px;
+    min-height:200px;
+    min-width:200px;
+  }
+  #circle-orbit-container p{
+    position: relative;
+    top: 45%;
+    transform: translateY(-50%);
+
+    padding:0;
+    margin:0;
+    font-family: bw;
+    color:#FFFFFF;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    }
+    #circle-orbit-container a{
+        position: relative;
+        top: 40%;
+        transform: translateY(-50%);
+        color:#6666FF;
+        text-shadow: 2px 2px 0px #421772;
+    }
+  /* ---------- Outer orbit - This is the circles furthest away from the central point ---------- */
+  #outer-orbit {
+    position: absolute;
+    top: 5vw;
+    left: 5vw;
+    width: 75%;
+    height: 75%;
+    min-height:300px;
+    min-width:300px;
+   
+    border-radius: 100%;
+
+    -webkit-animation: spin-right 10s linear infinite;
+    animation: spin-right 10s linear infinite;
+
+  }
+  
+  /* ---------- Repeating styles for the outer orbiting circles ---------- */
+  .outer-orbit-cirlces {
+    position: absolute;
+    animation: spin-right-counter 10s linear infinite;
+    }
+
+  #g1{left:0%;}
+  #g2{left:25%;top:-15%;}
+  #g3{left:50%;top:-15%;}
+
+  #g4{left:90%;top:25%;}
+  #g5{left:90%;top:50%;}
+  #g6{left:75%;}
+
+  #g7{left:75%;bottom:0%}
+  #g8{left:50%;bottom:-15%}
+  #g9{left:25%;bottom:-15%}
+
+  #g10{left:0%;bottom:0%}
+  #g11{left:-10%;top:25%;}
+  #g12{left:-10%;top:50%;}
+
+  /* ---------- Animation ---------- */
+  @-webkit-keyframes spin-right {
+    100% {
+      transform: rotate(360deg);
+      
+    }
+  }
+  @-webkit-keyframes spin-right-counter {
+    0% {
+        transform: rotate(0deg) scale(2);
+    }
+    100% {
+      transform: rotate(-360deg) scale(2);
+    }
+  }
+
+  body {
+    text-align: center;
+    font-family: bw;
+    font-size:32px;
+
+    object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    object-position: center;
+
+    font-smooth: never;
+    -webkit-font-smoothing : none;
+    background-image: url('img/bg.png');
+    background-attachment: fixed;
+    animation: scrollBG 1s linear infinite; /* Adjust speeds */
+}
+
+@keyframes scrollBG {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -32px -32px;
+  }
+}

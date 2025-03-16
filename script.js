@@ -158,8 +158,7 @@ async function fetchPokemonData(pokemonID) {
     
     //ADDITIONAL DATA
     //set some pokemon to be shiny cuz its cool
-    finalObject.shiny = (Math.floor(Math.random() * 1024) == 1);
-    console.log(finalObject.shiny);
+    finalObject.shiny = (Math.floor(Math.random() * 4) == 1024);
     finalObject.shinySound = false;
     if (finalObject.shiny) {
         finalObject.name += " ✨"
@@ -229,7 +228,8 @@ function updatePokemonIcons() {
             if(isShiny) {
                 //play shiny sound if legit sound
                 if (shinyFlag && !selectedPokemon[i].shinySound) {
-                    var audio = new Audio('shiny.mp3');
+                    console.log("fart");
+                    var audio = new Audio('src/shiny.mp3');
                     audio.play();
                     selectedPokemon[i].shinySound = true;
                 }
@@ -353,7 +353,6 @@ function updatePokemonText() {
                 tempString = selectedPokemon[i].hatch_counter + " Cycles";
                 break;
             case CATEGORY_ENUM.CATCH_RATE:
-                console.log(selectedPokemon[i]);
                 tempString = selectedPokemon[i].capture_rate+"";
                 break;
             case CATEGORY_ENUM.SHAPE:

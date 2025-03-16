@@ -172,9 +172,11 @@
     color:#AAAAAA;
     text-shadow: 2px 2px 0px #444444;
 }
+
 option {
     color:#444444;
     text-shadow: 2px 2px 0px #a5a5ad;
+    font-family: bw;
 }
 .checkbox {
     accent-color: #FF6666;
