@@ -18,12 +18,34 @@
     color:#d5d5db;
 }
 
+.header {
+    width:100%;
+    height:30px;
+    margin:0px;
+    padding:0px;
+
+    background-position: center;
+    overflow: show;
+    background-repeat: repeat-x;
+    background-image: url("img/headerband.png");
+    background-size: auto 100%;
+}
+
+.categorydisplay {
+    margin:5px;
+    font-size: 48px;
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#DDDDDD;
+}
+
 .row {
     display: flex;
     align-items: center top;
     justify-content: center;
   }
-.contentcenter {    
+.contentcenter {   
+    margin:1px; 
     text-align: center;
 }
 .contentcenter p {
@@ -34,12 +56,14 @@
 } 
 
 .pokemoncontainer {
-    width: 33vw;      /* Fixed width */
-    height: 33vw;     /* Fixed height */
+    width: 33vw;      
+    height: 33vw;
     position: relative;
 
-    background: #DDDDDD44;
+    background-image: url("img/monbg.png");
+    /*background: #DDDDDD44;*/
 
+    overflow: hidden;
     max-width: 192px;
     max-height: 192px;
 
@@ -47,11 +71,14 @@
 .pokemoncontainer img {
     transform: translate(-50%, -50%) scale(2); /* Scale factor goes here */
     transform-origin: bottom bottom;
-    
+    opacity:1.0;
+
     position: absolute;
     top: 50%;
     left: 50%;
+    
 
+    filter: drop-shadow(2px 2px 0px #222222BB);
 }
 
 .namecontainer {
@@ -122,25 +149,6 @@
     background-image: url("img/movesbox.png");
 }
 
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height:36px;
-
-    background-image: url("img/footer.png");
-
-    font-size: clamp(1px, 5vw, 28px); /*28px*/
-    opacity:1.0;
-    text-shadow: 2px 2px 0px #a5a5ad;
-    color:#2e2b2b;
-}
-
-.footer label button {
-    display: inline;
-}
-
 .buttonstandard {
     background-image:url("img/button.png");
     background-size:100%;
@@ -164,6 +172,33 @@
     color:#AAAAAA;
     text-shadow: 2px 2px 0px #444444;
 }
+option {
+    color:#444444;
+    text-shadow: 2px 2px 0px #a5a5ad;
+}
+.checkbox {
+    accent-color: #FF6666;
+}
+
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height:36px;
+
+    background-image: url("img/footer.png");
+
+    font-size: clamp(1px, 5vw, 28px); /*28px*/
+    opacity:1.0;
+    text-shadow: 2px 2px 0px #a5a5ad;
+    color:#DDDDDD;
+}
+
+.footer label button {
+    display: inline;
+}
 
 
 .everything {
@@ -182,6 +217,8 @@
 }
 
 body {
+    margin: 0;
+    padding: 0;
     background-image: url('img/bg.png');
     background-attachment: fixed;
     animation: scrollBG 1s linear infinite; /* Adjust speeds */

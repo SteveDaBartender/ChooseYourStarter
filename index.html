@@ -10,7 +10,11 @@
 <div class="everything">
     <script src="script.js"></script>
     <h1 class="title">Choose Your Starter</h1>
-    <h3 id="categorydisplay">"Category Name"</h3>
+
+    <p class="categorydisplay" id="categorydisplay">"Category Name"</p>
+    <div class="header"></div>
+    
+    
     <div class="row">
         <div class="contentcenter">
             <div class="namecontainer">
@@ -79,11 +83,11 @@
 
     <p></p>
     <div class="footer">
-        <input id="megaBox" onchange="updateMegaAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <input class="checkbox" id="megaBox" onchange="updateMegaAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
         <label >Enable Mega Forms</label>
-        <input id="gmaxBox" onchange="updateGmaxAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <input class="checkbox" id="gmaxBox" onchange="updateGmaxAllowed()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
         <label >Enable GMAX Forms</label>
-        <input id="metricBox" onchange="updateMetric()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
+        <input checked="true" class="checkbox" id="metricBox" onchange="updateMetric()" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">   
         <label >Imperial System</label>
     </div>
 </div>
