@@ -3,6 +3,7 @@ const ERROR_SPRITE = "error.png"; //fallback image for pokemon
 const POKEMON_COUNT = 3; //how many pokemon to use
 const STAT_MAX = 256; //highest possible stat value
 const STAT_AMOUNT = 6; //how many stats a apokemon has
+const STAT_SHORT_LIMIT = 2; //how many stats before the display is shortened
 const METERS_TO_FEET = 3.28084; //conversion of units
 const KILO_TO_LBS = 2.20462;
 const FOOT_INCHES = 12;
@@ -73,6 +74,14 @@ const BANNED_POKEMON = [
     1146, //vikavolt totem
     1152, //lurantis totem
     1153, //salazzle totem
+
+    1154, //minior meteor forms
+    1155,
+    1156,
+    1157,
+    1158,
+    1159,
+
     1168, //mimikyu totem
     1169, //mimikyu totem busted
 
@@ -86,8 +95,11 @@ const BANNED_POKEMON = [
     1177, //araquanid totem
     1178, //togedemaru totem
 
+    1182, //let's go starters
+    1183,
     1184, //pikachu world cap
     
+    1205, //zygarde 10
     1206, //cramorant forms
     1207,
 
@@ -119,6 +131,7 @@ async function fetchAllPokemonArray() {
             }
 
         } catch(error) {
+            console.log("There was an error reading initial pokemon data!")
             console.log("Error reading Pokemon ID ",i,"!")
         }
         
@@ -142,7 +155,7 @@ async function fetchPokemonData(pokemonID) {
         data = await response.json();
     } catch(error) {
         console.log("Error reading Pokemon ID ",pokemonID,"!")
-    }
+    } 
     
     //some of the pokemon data is stored in a spererate API call, 'species'
     //...so fet the api call again!!! joy!
@@ -182,18 +195,24 @@ async function newRandomPokemon() {
         //keep selecting monsters until we get a valid one
         while (loopFlag) {
             //ensure that the mon is not hard banned
-            randomID = Math.floor(Math.random() * pokemonData.length) ;
+            randomID = 210 + Math.floor(Math.random() *15)//Math.floor(Math.random() * pokemonData.length) ;
             while (BANNED_POKEMON.includes(randomID)) {
                 randomID = Math.floor(Math.random() * pokemonData.length) ;
             }
             //get data from API
             newPokemon = await fetchPokemonData(randomID);
             //now, we ensure it is not mega or GMAX (depending on ruleset)
-            console.log(newPokemon.forms[0].name);
-            console.log(newPokemon.forms[0].name.includes("-mega"));
+            //(this is kinda gross...)
             loopFlag = false;
+            //megas & gmax ban
             loopFlag = loopFlag || (!megasAllowed && newPokemon.forms[0].name.includes("-mega"));
             loopFlag = loopFlag || (!gmaxAllowed && newPokemon.forms[0].name.includes("-gmax"));
+            //species clause
+            for (let i2 = 0; i2 < selectedPokemon.length; i2++) {
+                if (selectedPokemon[i2].id == newPokemon.id) {
+                    loopFlag = true;
+                }
+            }
         }
         loopFlag = true;
         selectedPokemon.push(newPokemon);
@@ -257,9 +276,16 @@ function updatePokemonIcons() {
 //update the text beneath each pokemon
 function updatePokemonText() {
     let tempString = "null"; //temporary string before asigning to document
-    let sameStats = 0; //used to display "Balanced" stats
+    let statsArray = Array(STAT_AMOUNT); //used to calc high/low stats
+    let tempStats = Array(STAT_AMOUNT); //used to get how many stats the same
+    let sameStats = 0;
     //switch statement based on selected category
     for (let i = 0; i < POKEMON_COUNT; i++) {
+        //reset temp values
+        statsArray = Array(STAT_AMOUNT);
+        tempStats = Array(STAT_AMOUNT);
+        sameStats = 0;
+        tempString = "";
         switch(category) {
             case CATEGORY_ENUM.TYPE:
                 //first type (awlays exists)
@@ -279,33 +305,86 @@ function updatePokemonText() {
             case CATEGORY_ENUM.STAT_HIGH:
                 let highestValue = 0;
                 tempString = "???"
-                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
-                    if (selectedPokemon[i].stats[i2].base_stat > highestValue) {
-                        highestValue = selectedPokemon[i].stats[i2].base_stat;
-                        tempString = STAT_NAMES[i2];
-                    } else if (selectedPokemon[i].stats[i2].base_stat == highestValue) {
+                //retrieve stats from data
+                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {   
+                    statsArray[i2] = selectedPokemon[i].stats[i2].base_stat;
+                }
+                //sort stats
+                tempStats = statsArray.slice();
+                tempStats.sort((a, b) => b - a)
+                //get the highest amount of same stats
+                for (let i2 = 0; i2 < STAT_AMOUNT - 1; i2++) {  
+                    if (tempStats[i2] == tempStats[i2 + 1]) {
                         sameStats++;
-                        tempString += " / " + STAT_NAMES[i2];
+                    } else break;
+                }
+                //get the string to display
+                if (sameStats >= STAT_AMOUNT - 1) { //all stats equal
+                    tempString = "Balanced";
+                } else if (sameStats >= STAT_SHORT_LIMIT) {         //3+ same stat, truncated stat names
+                    for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
+                        if (selectedPokemon[i].stats[i2].base_stat > highestValue) {
+                            highestValue = statsArray[i2];
+                            tempString = STAT_NAMES_SHORT[i2];
+                        } else if (selectedPokemon[i].stats[i2].base_stat == highestValue) {
+                            sameStats++;
+                            tempString += " / " + STAT_NAMES_SHORT[i2];
+                        }
+                    }
+                } else {                            //default, full text
+                    for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
+                        if (statsArray[i2] > highestValue) {
+                            highestValue = statsArray[i2];
+                            tempString = STAT_NAMES[i2];
+                        } else if (statsArray[i2] == highestValue) {
+                            tempString += " / " + STAT_NAMES[i2];
+                        }
                     }
                 }
+
                 tempString = capitalize(tempString);
-                //if every stat is the same print a new message
-                if (sameStats >= STAT_AMOUNT - 1) {
-                    tempString = "Balanced";
-                }
                 break;
             case CATEGORY_ENUM.STAT_LOW:
                 let lowestValue = STAT_MAX;
                 tempString = "???"
-                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
-                    if (selectedPokemon[i].stats[i2].base_stat < lowestValue) {
-                        lowestValue = selectedPokemon[i].stats[i2].base_stat;
-                        tempString = STAT_NAMES[i2];
-                    } else if (selectedPokemon[i].stats[i2].base_stat == lowestValue) {
+                //retrieve stats from data
+                for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {   
+                    statsArray[i2] = selectedPokemon[i].stats[i2].base_stat;
+                }
+                //sort stats
+                tempStats = statsArray.slice();
+                tempStats.sort((a, b) => a - b)
+                //get the highest amount of same stats
+                for (let i2 = 0; i2 < STAT_AMOUNT - 1; i2++) {  
+                    if (tempStats[i2] == tempStats[i2 + 1]) {
                         sameStats++;
-                        tempString += " / " + STAT_NAMES[i2];
+                    } else break;
+                }
+                //get the string to display
+                if (sameStats >= STAT_AMOUNT - 1) { //all stats equal
+                    tempString = "Balanced";
+                } else if (sameStats >= STAT_SHORT_LIMIT) {         //3+ same stat, truncated stat names
+                    for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
+                        if (statsArray[i2] < lowestValue) {
+                            lowestValue = statsArray[i2];
+                            tempString = STAT_NAMES_SHORT[i2];
+                        } else if (statsArray[i2] == lowestValue) {
+                            sameStats++;
+                            tempString += " / " + STAT_NAMES_SHORT[i2];
+                        }
+                    }
+                } else {                            //default, full text
+                    for (let i2 = 0; i2 < STAT_AMOUNT; i2++) {
+                        if (statsArray[i2] < lowestValue) {
+                            lowestValue = statsArray[i2];
+                            tempString = STAT_NAMES[i2];
+                        } else if (statsArray[i2] == lowestValue) {
+                            sameStats++;
+                            tempString += " / " + STAT_NAMES[i2];
+                        }
                     }
                 }
+
                 tempString = capitalize(tempString);
                 //if every stat is the same print a new message
                 if (sameStats >= STAT_AMOUNT - 1) {
@@ -333,7 +412,7 @@ function updatePokemonText() {
                     tempString = tempHeight + "m";
                 } else {
                     tempHeight *= METERS_TO_FEET;
-                    tempString = Math.floor(tempHeight) +"' " + Math.trunc((tempHeight)*FOOT_INCHES) + "\"" + "ft"
+                    tempString = Math.floor(tempHeight) +"' " + Math.trunc((tempHeight - Math.floor(tempHeight))*FOOT_INCHES) + "\"" + "ft"
                 }
                 break;
             case CATEGORY_ENUM.WEIGHT:
@@ -431,7 +510,7 @@ function updateGmaxAllowed() {
 }
 //set the measurement system
 function updateMetric() {
-    metric = document.getElementById("metricBox").checked;
+    metric = !document.getElementById("metricBox").checked;
     console.log(metric);
 
     updatePokemonText();
