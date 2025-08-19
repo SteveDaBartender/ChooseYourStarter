@@ -195,7 +195,7 @@ async function newRandomPokemon() {
         //keep selecting monsters until we get a valid one
         while (loopFlag) {
             //ensure that the mon is not hard banned
-            randomID = 210 + Math.floor(Math.random() *15)//Math.floor(Math.random() * pokemonData.length) ;
+            randomID = Math.floor(Math.random() * pokemonData.length) ;
             while (BANNED_POKEMON.includes(randomID)) {
                 randomID = Math.floor(Math.random() * pokemonData.length) ;
             }
@@ -531,7 +531,7 @@ let metric = false; //whether to use metric system
     await fetchAllPokemonArray();
     // initalize the pokemon :)
     await newRandomPokemon();
-    
+
     //Set ability and move
     randomMoveAbility();
 
